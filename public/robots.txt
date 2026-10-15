@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /thanks
+
+Sitemap: https://franchise.itadis.kg/sitemap.xml

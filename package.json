@@ -1,0 +1,40 @@
+{
+  "name": "itadis-franchise",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Лендинг франшизы IT ADIS — одностраничный сайт из 5 экранов (React + TypeScript + Vite + three.js)",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --port 4173",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
+    "@react-three/fiber": "^9.1.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.56.3",
+    "react-router-dom": "^7.6.0",
+    "three": "^0.176.0",
+    "zod": "^3.25.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.18",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.5",
+    "@types/three": "^0.176.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Edge versions",
+    "last 2 Safari versions",
+    "iOS >= 15",
+    "last 2 Samsung versions"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Франшиза IT ADIS",
+  "short_name": "IT ADIS",
+  "lang": "ru",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBFBFE",
+  "theme_color": "#0D09D5",
+  "icons": [
+    { "src": "/favicon-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

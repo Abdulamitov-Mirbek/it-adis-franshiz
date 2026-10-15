@@ -1,0 +1,127 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ДИЗАЙН-СИСТЕМА IT ADIS
+   Бренд-цвета — из приложения A ТЗ. Поверх них построена «тёмная»
+   композиция: глубокий космос + электрический синий + лаймовый акцент.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ─── Бренд (не менять: приложение A ТЗ) ─── */
+  --blue: #0d09d5;
+  --blue-2: #2a25f2;
+  --lime: #83e40a;
+  --on-lime: #07071a;
+  --ink: #12112a;
+
+  /* ─── Светлая тема ─── */
+  --bg: #fbfbfe;
+  --bg-2: #eef0ff;
+  --bg-deep: #07071a;
+  --fg: #12112a;
+  --fg-strong: #07071a;
+  --muted: #4a5068;
+  --surface: #ffffff;
+  --surface-2: #f6f7ff;
+  --line: #daddf4;
+  --line-soft: #e8eaff;
+  --brand-ink: #0d09d5;
+  --warn-bg: #fff3d6;
+  --warn-fg: #7a4e00;
+  --error: #c62828;
+
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-line: rgba(13, 9, 213, 0.1);
+  --ghost: rgba(13, 9, 213, 0.05);
+
+  --shadow-s: 0 1px 2px rgb(13 9 213 / 0.05), 0 8px 24px rgb(13 9 213 / 0.07);
+  --shadow-m: 0 2px 8px rgb(13 9 213 / 0.07), 0 24px 60px rgb(13 9 213 / 0.12);
+  --shadow-l: 0 40px 120px rgb(7 7 26 / 0.25);
+
+  /* ─── Типографика ─── */
+  --font-display: 'Unbounded', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter Tight', 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* ─── Ритм ─── */
+  --container: 1280px;
+  --gutter: 24px;
+  --section-y: clamp(84px, 11vw, 160px);
+  --header-h: 76px;
+  --rail: 0px;
+
+  /* ─── Форма ─── */
+  --r-s: 14px;
+  --r-m: 20px;
+  --r-l: 28px;
+  --r-xl: 36px;
+  --r-pill: 999px;
+
+  /* ─── Движение ─── */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 0.18s var(--ease);
+  --t-base: 0.34s var(--ease);
+  --t-slow: 0.7s var(--ease-out-expo);
+}
+
+@media (min-width: 1240px) {
+  :root {
+    --rail: 74px;
+  }
+}
+
+/* ─── Тёмная тема: по настройке устройства… ─── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #06061a;
+    --bg-2: #0b0b24;
+    --fg: #f2f3ff;
+    --fg-strong: #ffffff;
+    --muted: #9ea3cd;
+    --surface: #10112c;
+    --surface-2: #161838;
+    --line: #262a55;
+    --line-soft: #1c1f44;
+    --brand-ink: #9c99ff;
+    --warn-bg: #2a2008;
+    --warn-fg: #ffd27a;
+    --error: #ff8a80;
+
+    --glass: rgba(255, 255, 255, 0.045);
+    --glass-line: rgba(255, 255, 255, 0.1);
+    --ghost: rgba(255, 255, 255, 0.038);
+
+    --shadow-s: 0 1px 2px rgb(0 0 0 / 0.5), 0 10px 30px rgb(0 0 0 / 0.35);
+    --shadow-m: 0 2px 10px rgb(0 0 0 / 0.5), 0 30px 70px rgb(0 0 0 / 0.5);
+    --shadow-l: 0 50px 130px rgb(0 0 0 / 0.7);
+  }
+}
+
+/* ─── …и принудительно через data-theme ─── */
+:root[data-theme='dark'] {
+  --bg: #06061a;
+  --bg-2: #0b0b24;
+  --fg: #f2f3ff;
+  --fg-strong: #ffffff;
+  --muted: #9ea3cd;
+  --surface: #10112c;
+  --surface-2: #161838;
+  --line: #262a55;
+  --line-soft: #1c1f44;
+  --brand-ink: #9c99ff;
+  --warn-bg: #2a2008;
+  --warn-fg: #ffd27a;
+  --error: #ff8a80;
+
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-line: rgba(255, 255, 255, 0.1);
+  --ghost: rgba(255, 255, 255, 0.038);
+
+  --shadow-s: 0 1px 2px rgb(0 0 0 / 0.5), 0 10px 30px rgb(0 0 0 / 0.35);
+  --shadow-m: 0 2px 10px rgb(0 0 0 / 0.5), 0 30px 70px rgb(0 0 0 / 0.5);
+  --shadow-l: 0 50px 130px rgb(0 0 0 / 0.7);
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--on-lime);
+}
