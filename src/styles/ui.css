@@ -8,6 +8,9 @@
   justify-content: center;
   gap: 10px;
   min-height: var(--h);
+  max-width: 100%;
+  min-width: 0;
+  padding-block: 12px;
   padding-inline: 28px;
   border: 1px solid transparent;
   border-radius: var(--r-pill);
@@ -145,7 +148,25 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--brand-ink);
-  flex: none;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 560px) {
+  .sec-head__top {
+    gap: 12px;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .btn {
+    padding-inline: 20px;
+    line-height: 1.35;
+  }
 }
 
 .eyebrow .dot {

@@ -18,7 +18,13 @@ function CodeCard({
       <span className="code-card__lang">{lang}</span>
       {lines.map((line) => (
         <div key={line.v} style={line.t === 'code-indent' ? { paddingLeft: 16 } : undefined}>
-          <span className={line.t === 'comment' ? 'cm' : undefined}>{line.v}</span>
+          <span className={line.t === 'comment' ? 'cm' : undefined}>
+            {line.t === 'comment' ? line.v : line.v.split(/\b(for|in|const|await|void|main|runApp)\b/g).map((part, index) => (
+              <span key={index} className={/^(for|in|const|await|void|main|runApp)$/.test(part) ? 'code-keyword' : undefined}>
+                {part}
+              </span>
+            ))}
+          </span>
         </div>
       ))}
     </div>
@@ -34,7 +40,6 @@ export function Hero() {
       <div className="hero__bg" aria-hidden="true" />
       <div className="hero__glow" aria-hidden="true" />
       <div className="hero__grid" aria-hidden="true" />
-      <SceneCanvas variant="hero" className="hero__canvas" onReady={onReady} />
 
       <div className="hero__inner">
         <div className="wrap">
@@ -64,8 +69,11 @@ export function Hero() {
 
           <p className="hero__micro">{HERO.micro}</p>
 
+          <div className="hero__visual">
+          <SceneCanvas variant="hero" className="hero__canvas" onReady={onReady} />
           {/* Запасная сцена: видна без WebGL и без JS */}
           <div className="fallback-scene" aria-hidden="true">
+            <div className="code-stack">
             <CodeCard className="code-card--py" lang={HERO.cards.python.lang} lines={HERO.cards.python.lines} />
             <CodeCard
               className="code-card--js"
@@ -73,6 +81,7 @@ export function Hero() {
               lines={HERO.cards.javascript.lines}
             />
             <CodeCard className="code-card--fl" lang={HERO.cards.flutter.lang} lines={HERO.cards.flutter.lines} />
+            </div>
 
             <div className="diploma">
               <b>{HERO.diploma.title}</b>
@@ -88,6 +97,7 @@ export function Hero() {
               <b>{HERO.sticker.top}</b>
               <span>{HERO.sticker.bottom}</span>
             </div>
+          </div>
           </div>
         </div>
       </div>

@@ -182,10 +182,22 @@ function Rig({ children, strength = 0.14 }: { children: ReactNode; strength?: nu
 
 /* ─────────────── Сцены ─────────────── */
 
-function HeroContent() {
+function HeroContent({ compact, onReady }: { compact: boolean; onReady: () => void }) {
   const [textures, setTextures] = useState<THREE.CanvasTexture[] | null>(null);
+  const reportedReady = useRef(false);
+
+  useFrame(() => {
+    if ((compact || textures) && !reportedReady.current) {
+      reportedReady.current = true;
+      onReady();
+    }
+  });
 
   useEffect(() => {
+    if (compact) {
+      setTextures(null);
+      return;
+    }
     let cancelled = false;
     const build = () => {
       if (cancelled) return;
@@ -204,7 +216,7 @@ function HeroContent() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [compact]);
 
   useEffect(() => {
     if (!textures) return;
@@ -213,14 +225,14 @@ function HeroContent() {
 
   return (
     <>
-      <WaveField />
+      <WaveField cols={compact ? 48 : 100} rows={compact ? 32 : 58} gap={compact ? 0.22 : 0.3} />
       <Glow position={[2.6, 1.2, -3]} size={9} />
       <Glow position={[-3.6, -1.4, -4]} size={8} color="42,37,242" />
 
-      <Rig>
-        <WireShape position={[3.1, 1.5, -1.2]} scale={1.15} />
+      <Rig strength={compact ? 0.04 : 0.14}>
+        <WireShape position={compact ? [1.3, 1.8, -1.2] : [3.1, 1.5, -1.2]} scale={compact ? 0.7 : 1.15} />
 
-        {textures ? (
+        {!compact && textures ? (
           <>
             <Panel texture={textures[0]} position={[2.3, 1.15, 0.2]} rotation={[0.03, -0.26, 0.02]} width={3} period={7} />
             <Panel texture={textures[1]} position={[3.5, -0.55, 0.9]} rotation={[0.02, -0.34, -0.015]} width={3.2} period={8} phase={1.2} />
@@ -237,10 +249,17 @@ function HeroContent() {
   );
 }
 
-function ApplyContent() {
+function ApplyContent({ compact, onReady }: { compact: boolean; onReady: () => void }) {
+  const reportedReady = useRef(false);
+  useFrame(() => {
+    if (!reportedReady.current) {
+      reportedReady.current = true;
+      onReady();
+    }
+  });
   return (
     <>
-      <WaveField cols={70} rows={40} gap={0.34} color="#7C8BFF" amplitude={0.34} />
+      <WaveField cols={compact ? 40 : 70} rows={compact ? 28 : 40} gap={0.34} color="#7C8BFF" amplitude={0.34} />
       <Glow position={[3, 0.8, -3]} size={9} />
       <Rig strength={0.1}>
         <WireShape position={[-3.4, 1.1, -1]} scale={0.9} />
@@ -249,15 +268,21 @@ function ApplyContent() {
   );
 }
 
-export default function Scene({ variant }: { variant: 'hero' | 'apply' }) {
+export default function Scene({ variant, compact, active, onReady }: {
+  variant: 'hero' | 'apply';
+  compact: boolean;
+  active: boolean;
+  onReady: () => void;
+}) {
   return (
     <Canvas
-      camera={{ position: [0, 0.6, 7], fov: 46 }}
-      dpr={[1, 1.6]}
-      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-      style={{ width: '100%', height: '100%' }}
+      camera={{ position: compact ? [0, -0.4, 7.8] : [0, 0.6, 7], fov: compact ? 50 : 46 }}
+      frameloop={active ? 'always' : 'never'}
+      dpr={compact ? [1, 2] : [1, 1.6]}
+      gl={{ antialias: true, alpha: true, powerPreference: compact ? 'default' : 'high-performance' }}
+      style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
     >
-      {variant === 'hero' ? <HeroContent /> : <ApplyContent />}
+      {variant === 'hero' ? <HeroContent compact={compact} onReady={onReady} /> : <ApplyContent compact={compact} onReady={onReady} />}
     </Canvas>
   );
 }

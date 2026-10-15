@@ -9,6 +9,14 @@
     border-color var(--t-base),
     backdrop-filter var(--t-base);
   border-bottom: 1px solid transparent;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.brand-logo {
+  height: var(--logo-height);
+  width: auto;
+  object-fit: contain;
+  flex: none;
 }
 
 .header.is-stuck {
@@ -117,8 +125,23 @@
 }
 
 @media (max-width: 560px) {
+  .header {
+    background: rgb(5 5 26 / 0.94);
+    border-bottom-color: rgb(255 255 255 / 0.1);
+  }
+
+  .header.is-stuck {
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+  }
+
+  .header__inner {
+    gap: 16px;
+    padding-block: 10px;
+  }
+
   .header__logo img {
-    height: 40px;
+    height: 44px;
+    width: 70px;
   }
 }
 

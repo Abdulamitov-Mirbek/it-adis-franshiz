@@ -163,6 +163,34 @@ textarea {
   max-width: var(--container);
   margin-inline: auto;
   padding-inline: var(--gutter);
+  min-width: 0;
+}
+
+/* Let content shrink inside grids instead of widening the mobile layout. */
+:where(.why-grid, .formats-grid, .start-grid, .apply__grid, .footer__grid) > * {
+  min-width: 0;
+}
+
+@media (max-width: 560px) {
+  :root {
+    --gutter: 20px;
+    --header-h: 68px;
+    --section-y: 64px;
+  }
+
+  .t-hero {
+    font-size: clamp(1.75rem, 8.4vw, 2.6rem);
+    line-height: 1.08;
+  }
+
+  .t-h2 {
+    font-size: clamp(1.5rem, 6.4vw, 1.95rem);
+    line-height: 1.15;
+  }
+
+  :where(h1, h2, h3, p, .btn, .consent, .footer__links) {
+    overflow-wrap: anywhere;
+  }
 }
 
 .section {

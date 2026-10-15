@@ -1,6 +1,5 @@
 import { Icon } from '@/components/ui/Icon';
 import { LeadForm } from '@/components/form/LeadForm';
-import { Reveal } from '@/components/ui/Reveal';
 import { SceneCanvas } from '@/components/three/SceneCanvas';
 import { SectionHead } from '@/components/ui/SectionHead';
 import { APPLY } from '@/content/content';
@@ -15,7 +14,7 @@ interface Props {
 export function Apply({ format, onFormatChange }: Props) {
   return (
     <section className="apply" id="apply">
-      <SceneCanvas variant="apply" className="apply__canvas" minWidth={900} />
+      <SceneCanvas variant="apply" className="apply__canvas" />
 
       <div className="wrap">
         <div className="apply__grid">

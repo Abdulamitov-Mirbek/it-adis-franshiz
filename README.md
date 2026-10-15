@@ -93,10 +93,35 @@ src/
 ни шрифтовые атласы, ни постпроцессинг.
 
 Сцена — **прогрессивное улучшение**: отдельный чанк `three`, грузится только при
-WebGL, ширине ≥ 700 px (для заявки ≥ 900), ≥ 4 ядрах и выключенном
-`prefers-reduced-motion`. Если WebGL упал, `SceneBoundary` просто снимает сцену.
+WebGL и выключенном `prefers-reduced-motion`, включая телефоны. На экранах до
+1100 px карточки отображаются как HTML с чётким текстом и парящей CSS-анимацией
+поверх 3D-фона. Частиц меньше, а плотность рендеринга фона ограничена 2.
+WebGL-сцена приостанавливается вне экрана. На десктопе запасные карточки
+скрываются только после загрузки текстур и первого кадра. Если WebGL упал,
+`SceneBoundary` или обработчик потери контекста возвращает запасную вёрстку.
 Запасная вёрстка (карточки с кодом) есть в разметке всегда — контент виден и без
 WebGL, и без JS.
+
+## Vercel
+
+The root `vercel.json` configures the Vite build, `dist` output, and SPA routing
+so direct visits and refreshes on `/thanks` and `/privacy` work.
+
+1. Push this project to your Git repository, including `package-lock.json` and `vercel.json`.
+2. Import the repository into Vercel. Use the repository root as the Root Directory.
+3. Use the Vite preset, Build Command `npm run build`, and Output Directory `dist`
+   (already configured in `vercel.json`).
+4. Add the required variables from `.env.example` in the project's Environment Variables:
+   `VITE_SITE_URL` for the public site URL, `VITE_LEAD_ENDPOINT` for real lead submissions,
+   and any contact links or analytics IDs you want enabled. Without a lead endpoint,
+   the form runs in demo mode and does not send submissions.
+5. Deploy. Redeploy after changing environment variables because Vite embeds them at build time.
+
+Alternatively, run `npx vercel` from this directory to create a preview deployment,
+then `npx vercel --prod` to publish production after checking the preview.
+
+Variables prefixed with `VITE_` are public browser configuration; never put secret
+API keys or bot tokens in them. Keep backend credentials on your lead endpoint's server.
 
 ## Деплой
 

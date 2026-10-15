@@ -1,4 +1,4 @@
-import { Component, Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
+import { Component, Suspense, lazy, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 const Scene = lazy(() => import('./Scene'));
@@ -23,9 +23,9 @@ class SceneBoundary extends Component<{ children: ReactNode; onFail: () => void 
 function hasWebGL(): boolean {
   try {
     const canvas = document.createElement('canvas');
-    return Boolean(
-      window.WebGLRenderingContext && (canvas.getContext('webgl2') ?? canvas.getContext('webgl')),
-    );
+    const context = canvas.getContext('webgl2') ?? canvas.getContext('webgl');
+    context?.getExtension('WEBGL_lose_context')?.loseContext();
+    return Boolean(context);
   } catch {
     return false;
   }
@@ -34,51 +34,66 @@ function hasWebGL(): boolean {
 interface Props {
   variant: 'hero' | 'apply';
   className: string;
-  minWidth?: number;
   onReady?: (ready: boolean) => void;
 }
 
 /**
  * 3D — прогрессивное улучшение: отдельный чанк, грузится только при
- * WebGL, достаточной ширине и без prefers-reduced-motion.
+ * WebGL и без prefers-reduced-motion. На телефонах используем лёгкую сцену.
  */
-export function SceneCanvas({ variant, className, minWidth = 700, onReady }: Props) {
+export function SceneCanvas({ variant, className, onReady }: Props) {
   const reduced = useReducedMotion();
   const [enabled, setEnabled] = useState(false);
   const [ready, setReady] = useState(false);
+  const [compact, setCompact] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const container = useRef<HTMLDivElement>(null);
+  const handleReady = useCallback(() => setReady(true), []);
+  const handleFail = useCallback(() => {
+    setReady(false);
+    setEnabled(false);
+  }, []);
 
   useEffect(() => {
-    if (reduced) {
-      setEnabled(false);
-      return;
-    }
-    const check = () => {
-      const wide = window.matchMedia(`(min-width: ${minWidth}px)`).matches;
-      const cores = navigator.hardwareConcurrency ?? 4;
-      setEnabled(wide && cores >= 4 && hasWebGL());
-    };
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, [reduced, minWidth]);
+    setReady(false);
+    setEnabled(!reduced && hasWebGL());
+  }, [reduced]);
+
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 1100px)');
+    const update = () => setCompact(query.matches);
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     onReady?.(enabled && ready);
   }, [enabled, ready, onReady]);
 
   useEffect(() => {
-    if (!enabled) return;
-    const timer = window.setTimeout(() => setReady(true), 120);
-    return () => window.clearTimeout(timer);
-  }, [enabled]);
+    if (!enabled || !container.current) return;
+    const node = container.current;
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
+    observer.observe(node);
+    const onContextLost = (event: Event) => {
+      event.preventDefault();
+      handleFail();
+    };
+    node.addEventListener('webglcontextlost', onContextLost, true);
+    return () => {
+      observer.disconnect();
+      node.removeEventListener('webglcontextlost', onContextLost, true);
+    };
+  }, [enabled, handleFail]);
 
   if (!enabled) return null;
 
   return (
-    <div className={`${className} ${ready ? 'is-ready' : ''}`} aria-hidden="true">
-      <SceneBoundary onFail={() => setEnabled(false)}>
+    <div ref={container} className={`${className} ${ready ? 'is-ready' : ''}`} aria-hidden="true">
+      <SceneBoundary onFail={handleFail}>
         <Suspense fallback={null}>
-          <Scene variant={variant} />
+          <Scene variant={variant} compact={compact} active={visible} onReady={handleReady} />
         </Suspense>
       </SceneBoundary>
     </div>
