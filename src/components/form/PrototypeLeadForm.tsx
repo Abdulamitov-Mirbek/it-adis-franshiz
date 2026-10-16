@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { Copy, useLanguage } from '@/content/Language';
-import { CONFIG } from '@/lib/config';
+import { BUSINESS_CONTACT, CONFIG } from '@/lib/config';
 import { createLeadSchema, type LeadValues } from './leadSchema';
 import { buildPayload, submitLead } from './submitLead';
 import { track } from '@/lib/analytics';
@@ -105,7 +105,7 @@ export function PrototypeLeadForm({ format, city, onFormatChange }: Props) {
       `${copy.budgetFormLabel}: ${budgetLabel}`,
     ].join('\n');
     window.open(
-      `https://wa.me/996558553177?text=${encodeURIComponent(message)}`,
+      `https://wa.me/${BUSINESS_CONTACT.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`,
       '_blank',
       'noopener,noreferrer',
     );
@@ -232,7 +232,11 @@ export function PrototypeLeadForm({ format, city, onFormatChange }: Props) {
           )}
         </span>
       </label>
-      <button className="btn btn--block" type="submit" disabled={!hasConsent || isSubmitting}>
+      <button
+        className="btn btn--block"
+        type="submit"
+        disabled={!hasConsent || isSubmitting}
+      >
         {isSubmitting ? (
           isKg ? (
             'Жөнөтүлүүдө…'

@@ -5,6 +5,7 @@ import { SceneCanvas } from '@/components/three/SceneCanvas';
 import { PrototypeLeadForm } from '@/components/form/PrototypeLeadForm';
 import { PhotoGallery } from '@/components/sections/PhotoGallery';
 import { track } from '@/lib/analytics';
+import { BUSINESS_CONTACT } from '@/lib/config';
 import type { LeadValues } from '@/components/form/leadSchema';
 
 type Format = LeadValues['format'];
@@ -464,8 +465,12 @@ export function PrototypeContent() {
               index="09"
             />
             <div className="prototype-contact">
-              <a href="tel:+996701882882">+996 701 882 882</a>
-              <a href="mailto:itadiskg1@gmail.com">itadiskg1@gmail.com</a>
+              <a href={`tel:${BUSINESS_CONTACT.phone}`}>
+                {BUSINESS_CONTACT.phoneDisplay}
+              </a>
+              <a href={`mailto:${BUSINESS_CONTACT.email}`}>
+                {BUSINESS_CONTACT.email}
+              </a>
               <p>IT ADIS менен келечектин адиси бол!</p>
             </div>
           </div>

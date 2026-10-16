@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Logo } from '@/components/ui/Logo';
 import { Copy, useLanguage } from '@/content/Language';
-import { CONTACT_LIST } from '@/lib/config';
+import { BUSINESS_CONTACT, CONTACT_LIST } from '@/lib/config';
 import { track } from '@/lib/analytics';
 
 export function Footer() {
@@ -24,9 +24,13 @@ export function Footer() {
               <Copy id="footerLine" />
             </p>
             <p>
-              <a href="tel:+996701882882">+996 701 882 882</a>
+              <a href={`tel:${BUSINESS_CONTACT.phone}`}>
+                {BUSINESS_CONTACT.phoneDisplay}
+              </a>
               <br />
-              <a href="mailto:itadiskg1@gmail.com">itadiskg1@gmail.com</a>
+              <a href={`mailto:${BUSINESS_CONTACT.email}`}>
+                {BUSINESS_CONTACT.email}
+              </a>
             </p>
           </div>
 
