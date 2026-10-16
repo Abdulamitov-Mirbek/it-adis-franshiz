@@ -57,7 +57,10 @@ export function LanguageSwitcher() {
       className="language-picker"
       ref={container}
       onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+        // Safari can blur a tapped option without focusing another element.
+        // Outside taps are handled by the document pointerdown listener.
+        const nextTarget = event.relatedTarget;
+        if (nextTarget && !event.currentTarget.contains(nextTarget)) setOpen(false);
       }}
     >
       <button
