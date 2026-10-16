@@ -1,14 +1,18 @@
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { THANKS } from '@/content/content';
+import { useLanguage } from '@/content/Language';
 import { useDocumentMeta } from '@/hooks/useDocumentMeta';
 import { track } from '@/lib/analytics';
 
 export function Thanks() {
+  const { isKg, copy } = useLanguage();
   const location = useLocation();
   const name = (location.state as { name?: string } | null)?.name ?? '';
 
-  useDocumentMeta('Заявка получена — Франшиза IT ADIS', THANKS.text, '/thanks');
+  const title = isKg
+    ? `Рахмат${name ? `, ${name}` : ''}! Өтүнмө кабыл алынды`
+    : `Спасибо${name ? `, ${name}` : ''}! Заявка получена`;
+  useDocumentMeta(title, copy.finalText, '/thanks');
 
   useEffect(() => {
     track('thanks_view');
@@ -19,12 +23,12 @@ export function Thanks() {
       <div className="wrap page__inner">
         <span className="eyebrow">
           <span className="dot" />
-          Заявка принята
+          {isKg ? 'Өтүнмө кабыл алынды' : 'Заявка принята'}
         </span>
-        <h1 style={{ marginTop: 18 }}>{THANKS.title(name)}</h1>
-        <p>{THANKS.text}</p>
+        <h1 style={{ marginTop: 18 }}>{title}</h1>
+        <p>{copy.finalText}</p>
         <Link className="btn" to="/">
-          {THANKS.back}
+          {isKg ? 'Башкы бетке кайтуу' : 'Вернуться на главную'}
         </Link>
       </div>
     </main>

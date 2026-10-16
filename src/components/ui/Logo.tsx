@@ -1,5 +1,4 @@
 import logoUrl from '@/assets/logo.webp';
-import { META } from '@/content/content';
 import type { CSSProperties } from 'react';
 
 interface Props {
@@ -12,7 +11,7 @@ export function Logo({ height = 42, className = '' }: Props) {
   return (
     <img
       src={logoUrl}
-      alt={META.logoAlt}
+      alt="IT ADIS — IT-академия"
       width={Math.round((height * 699) / 440)}
       height={height}
       style={{ '--logo-height': `${height}px` } as CSSProperties}

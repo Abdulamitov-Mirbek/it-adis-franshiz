@@ -13,6 +13,7 @@ export type AnalyticsEvent =
   | 'cta_click'
   | 'nav_click'
   | 'format_select'
+  | 'budget_calculate'
   | 'form_start'
   | 'form_error'
   | 'form_submit'

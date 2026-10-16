@@ -10,7 +10,7 @@ import { NotFound } from '@/pages/NotFound';
 import { captureAttribution } from '@/lib/attribution';
 import { initScrollDepth } from '@/lib/analytics';
 import { useActiveSection } from '@/hooks/useActiveSection';
-import { SCREENS } from '@/content/content';
+import { useLanguage } from '@/content/Language';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -20,9 +20,10 @@ function ScrollToTop() {
   return null;
 }
 
-const SCREEN_IDS = SCREENS.map((screen) => screen.id);
+const SCREEN_IDS = ['top', 'why', 'franchise', 'money', 'steps', 'apply'];
 
 export default function App() {
+  const { isKg } = useLanguage();
   const { pathname } = useLocation();
   const active = useActiveSection(SCREEN_IDS);
 
@@ -34,7 +35,7 @@ export default function App() {
   return (
     <>
       <a className="skip-link" href="#main">
-        Перейти к содержимому
+        {isKg ? 'Мазмунга өтүү' : 'Перейти к содержимому'}
       </a>
       <ScrollToTop />
       <Header active={pathname === '/' ? active : undefined} />

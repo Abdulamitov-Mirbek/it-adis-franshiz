@@ -1,9 +1,15 @@
 import { CONFIG } from '@/lib/config';
-import { bishkekTimestamp, deviceType, getAttribution } from '@/lib/attribution';
+import {
+  bishkekTimestamp,
+  deviceType,
+  getAttribution,
+} from '@/lib/attribution';
 import { normalizePhone } from '@/lib/phone';
 import type { LeadValues } from './leadSchema';
 
 export interface LeadPayload extends Omit<LeadValues, 'company'> {
+  budget?: string;
+  language?: 'ru' | 'kg';
   phoneNormalized: string;
   page: string;
   referrer: string;
@@ -14,7 +20,10 @@ export interface LeadPayload extends Omit<LeadValues, 'company'> {
   clickIds: Record<string, string>;
 }
 
-export function buildPayload(values: LeadValues, placement: string): LeadPayload {
+export function buildPayload(
+  values: LeadValues,
+  placement: string,
+): LeadPayload {
   const attribution = getAttribution();
   return {
     name: values.name.trim(),
@@ -54,5 +63,6 @@ export async function submitLead(payload: LeadPayload): Promise<void> {
     body: JSON.stringify(payload),
   });
 
-  if (!response.ok) throw new Error(`Lead endpoint responded ${response.status}`);
+  if (!response.ok)
+    throw new Error(`Lead endpoint responded ${response.status}`);
 }

@@ -1,6 +1,6 @@
 # Франшиза IT ADIS — сайт-визитка
 
-Одностраничный сайт из 5 экранов по ТЗ «B2B-ПАКЕТ · ПРОДАЖА ФРАНШИЗЫ · ДЛЯ РАЗРАБОТЧИКА».
+Одностраничный сайт франшизы IT ADIS: первый экран и 9 разделов из обновлённого HTML-прототипа, на русском и кыргызском языках.
 Фронтенд: **React 19 + TypeScript + Vite**, 3D — **three.js / @react-three/fiber**.
 
 Визуально это не перенос прототипа «один в один», а полноценный редизайн:
@@ -35,7 +35,7 @@ src/
 │  └─ sections.css         экраны 2–5, форма, служебные страницы
 ├─ components/
 │  ├─ layout/              Header (sticky + прогресс прокрутки), Footer
-│  ├─ sections/            Hero, WhyItWorks, Formats, Start, Apply
+│  ├─ sections/            Hero + PrototypeContent (разделы обновлённого прототипа)
 │  ├─ three/               3D: SceneCanvas (условная загрузка), Scene, textures
 │  ├─ form/                LeadForm, leadSchema (zod), submitLead
 │  └─ ui/                  Reveal, Counter, Marquee, Icon, SectionHead, Logo
@@ -44,14 +44,14 @@ src/
 └─ pages/                  Home, Thanks (/thanks), Privacy (/privacy), NotFound (404)
 ```
 
-**Тексты и цифры меняются только в `src/content/content.ts`** — раздел 10.3 ТЗ.
+**Основные тексты меняются в `src/content/locales/ru.json` и `kg.json`**. Числа финансовой модели находятся в `PrototypeContent.tsx`, а декоративные 3D-карточки — в `content.ts` / `heroVisual.ts`.
 Цифры форматов (`FORMATS`) — единый источник для вкладки, подписи кнопки и поля формы.
 
 ## Настройка перед публикацией (.env)
 
 | Переменная | Зачем |
 |---|---|
-| `VITE_LEAD_ENDPOINT` | URL, куда уходит заявка. Пусто → демо-режим: форма проходит весь сценарий, но ничего не отправляет |
+| `VITE_LEAD_ENDPOINT` | URL, куда уходит заявка. Пусто → открывается черновик WhatsApp, который отправляет посетитель |
 | `VITE_CONTACT_WHATSAPP` / `TELEGRAM` / `INSTAGRAM` | строка «Или напишите:» показывается только для заполненных ссылок (раздел 8.5 ТЗ) |
 | `VITE_GA4_ID`, `VITE_META_PIXEL_ID`, `VITE_YANDEX_METRIKA_ID` | аналитика; пусто → система не подключается |
 | `VITE_SITE_URL` | канонический адрес для canonical и og:url |
@@ -102,6 +102,18 @@ WebGL-сцена приостанавливается вне экрана. На 
 Запасная вёрстка (карточки с кодом) есть в разметке всегда — контент виден и без
 WebGL, и без JS.
 
+## Тексты и языки
+
+Тексты из `it_adis_franchise_prototype_updated (1).html` перенесены без изменения
+в `src/content/locales/ru.json` и `src/content/locales/kg.json` (137 ключей в каждом).
+Переключатель RU / KG в шапке сохраняет выбор в localStorage. Для кыргызского языка
+атрибут HTML `lang` установлен в `ky`. Основная страница собрана в `PrototypeContent.tsx`;
+калькулятор считает паушальный взнос, стартовые инвестиции и дополнительный бюджет.
+
+Без `VITE_LEAD_ENDPOINT` форма открывает подготовленный черновик WhatsApp на номер
++996 558 553 177. Сообщение отправляет сам посетитель. При настроенном endpoint форма
+отправляет JSON, включая выбранный язык и бюджет, и переходит на `/thanks`.
+
 ## Vercel
 
 The root `vercel.json` configures the Vite build, `dist` output, and SPA routing
@@ -114,7 +126,7 @@ so direct visits and refreshes on `/thanks` and `/privacy` work.
 4. Add the required variables from `.env.example` in the project's Environment Variables:
    `VITE_SITE_URL` for the public site URL, `VITE_LEAD_ENDPOINT` for real lead submissions,
    and any contact links or analytics IDs you want enabled. Without a lead endpoint,
-   the form runs in demo mode and does not send submissions.
+   the form opens a WhatsApp draft for the visitor to review and send.
 5. Deploy. Redeploy after changing environment variables because Vite embeds them at build time.
 
 Alternatively, run `npx vercel` from this directory to create a preview deployment,
