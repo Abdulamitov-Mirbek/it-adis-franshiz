@@ -282,9 +282,6 @@ export function PrototypeContent() {
               </Reveal>
             ))}
           </div>
-          <p className="prototype-note">
-            <Copy id="financeNote" />
-          </p>
           <div className="prototype-pair prototype-calculator" id="calculator">
             <div className="card prototype-panel">
               <h3 className="t-h3">

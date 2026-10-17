@@ -319,12 +319,6 @@
 .prototype-form .consent {
   font-size: 12px;
 }
-.prototype-footer-note {
-  max-width: 100%;
-  color: #b9bcf0;
-  font-size: 12px;
-  margin-top: 28px;
-}
 .mobile-lead-cta {
   display: none;
 }

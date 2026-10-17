@@ -105,7 +105,7 @@ WebGL, и без JS.
 ## Тексты и языки
 
 Тексты из `it_adis_franchise_prototype_updated (1).html` перенесены без изменения
-в `src/content/locales/ru.json` и `src/content/locales/kg.json` (137 ключей в каждом).
+в `src/content/locales/ru.json` и `src/content/locales/kg.json` (135 ключей в каждом).
 Переключатель RU / KG в шапке сохраняет выбор в localStorage. Для кыргызского языка
 атрибут HTML `lang` установлен в `ky`. Основная страница собрана в `PrototypeContent.tsx`;
 калькулятор считает паушальный взнос, стартовые инвестиции и дополнительный бюджет.

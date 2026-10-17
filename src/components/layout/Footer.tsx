@@ -57,10 +57,6 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="prototype-footer-note">
-          <Copy id="footerDisclaimer" />
-        </div>
-
         <div className="footer__bottom">
           <span>IT ADIS менен келечектин адиси бол!</span>
           <span>© {new Date().getFullYear()} IT ADIS</span>
