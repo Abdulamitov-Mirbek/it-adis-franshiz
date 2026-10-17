@@ -1,0 +1,36 @@
+/* Unbounded's missing Kyrgyz letters, drawn from its own outlines.
+   The same family stack applies to RU and KG; only these six glyphs use it. */
+@font-face {
+  font-family: 'IT ADIS Kyrgyz';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/it-adis-kyrgyz-700.woff2') format('woff2');
+  unicode-range: U+04A2-04A3, U+04AE-04AF, U+04E8-04E9;
+}
+
+@font-face {
+  font-family: 'IT ADIS Kyrgyz';
+  font-style: normal;
+  font-weight: 800 900;
+  font-display: swap;
+  src: url('/fonts/it-adis-kyrgyz-800.woff2') format('woff2');
+  unicode-range: U+04A2-04A3, U+04AE-04AF, U+04E8-04E9;
+}
+
+/* The upstream build supports the full Kyrgyz alphabet. */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 500;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-bold.woff2') format('woff2');
+}

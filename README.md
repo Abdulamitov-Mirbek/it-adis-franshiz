@@ -186,7 +186,15 @@ server {
 | Текст и интерфейс | **Inter Tight** | 400–800 + курсив 800 для акцентов |
 | Метки, номера, код | **JetBrains Mono** | 500, 700 |
 
-Подключены с Google Fonts с `display=swap` и `preconnect`. ТЗ называл Montserrat /
+Unbounded и Inter Tight подключены с Google Fonts с `display=swap` и `preconnect`.
+Недостающие в Unbounded кыргызские буквы Ңң, Өө, Үү дополняются локальным
+шрифтом **IT ADIS Kyrgyz**, созданным из контуров того же Unbounded (700, 800).
+Одинаковый стек шрифтов используется в RU и KG. JetBrains Mono загружается
+локально из upstream-сборки с полным кыргызским алфавитом. Файлы и лицензии
+OFL находятся в `public/fonts`; воспроизводимая сборка —
+`scripts/build-kyrgyz-fonts.py` (Python + `fonttools`, `brotli`).
+
+ТЗ называл Montserrat /
 DM Sans: это honest-деталь для согласования с заказчиком — Montserrat выглядит
 «как у всех», Unbounded + Inter Tight дают узнаваемую подачу и лучше ложатся на
 угловатый знак логотипа. Вернуть шрифты из ТЗ — это три строки в

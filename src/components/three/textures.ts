@@ -13,7 +13,7 @@ interface CardLine {
 }
 
 const MONO = '500 15px "JetBrains Mono", ui-monospace, monospace';
-const DISPLAY = '700 20px Unbounded, "Inter Tight", system-ui, sans-serif';
+const DISPLAY = '700 20px "IT ADIS Kyrgyz", Unbounded, "Inter Tight", system-ui, sans-serif';
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   ctx.beginPath();
@@ -155,7 +155,7 @@ export function makeStickerTexture(top: string, bottom: string): THREE.CanvasTex
 
   ctx.textAlign = 'center';
   ctx.fillStyle = '#07071A';
-  ctx.font = '800 42px Unbounded, "Inter Tight", system-ui, sans-serif';
+  ctx.font = '800 42px "IT ADIS Kyrgyz", Unbounded, "Inter Tight", system-ui, sans-serif';
   ctx.fillText(top, size / 2, size / 2 + 2);
   ctx.font = '700 17px "Inter Tight", system-ui, sans-serif';
   ctx.fillText(bottom, size / 2, size / 2 + 32);
