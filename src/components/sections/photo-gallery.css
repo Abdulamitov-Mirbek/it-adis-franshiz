@@ -105,6 +105,19 @@
   max-width: none;
   -webkit-user-drag: none;
 }
+/* The certificate originals are sideways. Turn their presentation upright
+   inside portrait cards while retaining the original image quality. */
+.photo-gallery__photo--upright {
+  position: relative;
+}
+.photo-gallery__photo--upright img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--photo-height) - 2px);
+  height: auto;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
 @media (max-width: 560px) {
   .photo-gallery {
     --photo-height: 210px;

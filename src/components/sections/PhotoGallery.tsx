@@ -13,7 +13,16 @@ import academyEntrance from '@/assets/photo_6_2026-10-16_18-31-45.jpg';
 import receptionHall from '@/assets/photo_7_2026-10-16_18-31-45.jpg';
 import './photo-gallery.css';
 
-const photos = [
+interface GalleryPhoto {
+  src: string;
+  width: number;
+  height: number;
+  rotate?: boolean;
+  ru: string;
+  kg: string;
+}
+
+const photos: GalleryPhoto[] = [
   {
     src: graduationGroup,
     width: 960,
@@ -32,6 +41,7 @@ const photos = [
     src: certificate,
     width: 1280,
     height: 960,
+    rotate: true,
     ru: 'Обложка сертификата',
     kg: 'Сертификаттын мукабасы',
   },
@@ -53,6 +63,7 @@ const photos = [
     src: redCertificate,
     width: 1280,
     height: 960,
+    rotate: true,
     ru: 'Красная обложка сертификата',
     kg: 'Сертификаттын кызыл мукабасы',
   },
@@ -84,7 +95,7 @@ const photos = [
     ru: 'Холл и стойка ресепшена IT ADIS',
     kg: 'IT ADIS залы жана кабылдама үстөлү',
   },
-] as const;
+];
 
 interface RowProps {
   reverse?: boolean;
@@ -199,10 +210,14 @@ function PhotoRow({ reverse = false, playing, visible, reduced }: RowProps) {
           >
             {sequence.map((photo, index) => (
               <figure
-                className="photo-gallery__photo"
+                className={`photo-gallery__photo${photo.rotate ? ' photo-gallery__photo--upright' : ''}`}
                 key={`${photo.src}-${index}`}
                 aria-hidden={index >= ordered.length || undefined}
-                style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
+                style={{
+                  aspectRatio: photo.rotate
+                    ? `${photo.height} / ${photo.width}`
+                    : `${photo.width} / ${photo.height}`,
+                }}
               >
                 <img
                   src={photo.src}
