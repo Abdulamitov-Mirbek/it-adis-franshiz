@@ -12,7 +12,12 @@ export function Thanks() {
   const title = isKg
     ? `Рахмат${name ? `, ${name}` : ''}! Өтүнмө кабыл алынды`
     : `Спасибо${name ? `, ${name}` : ''}! Заявка получена`;
-  useDocumentMeta(title, copy.finalText, '/thanks');
+  // Analytics tags can read document.title; keep the visitor's name out of it.
+  useDocumentMeta(
+    isKg ? 'Рахмат! Өтүнмө кабыл алынды' : 'Спасибо! Заявка получена',
+    copy.finalText,
+    '/thanks',
+  );
 
   useEffect(() => {
     track('thanks_view');

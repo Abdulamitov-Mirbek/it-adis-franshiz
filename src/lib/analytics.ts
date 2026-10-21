@@ -7,7 +7,11 @@
  */
 
 import { hasAnalyticsConsent } from './privacyConsent';
-import { analyticsPageUrl, isTagManagerConfigured } from './tagManager';
+import {
+  analyticsPageUrl,
+  isTagManagerConfigured,
+  startTagManager,
+} from './tagManager';
 
 export type AnalyticsEvent =
   | 'page_view'
@@ -54,6 +58,9 @@ export function track(event: AnalyticsEvent, params: Params = {}): void {
     !isTagManagerConfigured()
   )
     return;
+  // Child-page effects (for example /thanks) can fire before App's effect.
+  // Ensure consent commands precede every event, including restored sessions.
+  startTagManager();
   const payload = stripPersonal(params);
 
   // Container tags should consume these events; no direct analytics SDKs run here.
