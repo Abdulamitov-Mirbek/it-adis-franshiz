@@ -3,10 +3,18 @@
  * Сохраняются при первом заходе на 30 дней и уходят вместе с формой.
  */
 
+import { hasAnalyticsConsent } from './privacyConsent';
+
 const STORAGE_KEY = 'itadis_attribution';
 const TTL_DAYS = 30;
 
-const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'] as const;
+const UTM_KEYS = [
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
+  'utm_term',
+] as const;
 const CLICK_IDS = ['fbclid', 'gclid', 'ttclid', 'yclid'] as const;
 
 export interface Attribution {
@@ -32,6 +40,7 @@ function readStored(): Attribution | null {
 
 /** Вызывается один раз при загрузке страницы. */
 export function captureAttribution(): Attribution {
+  if (!hasAnalyticsConsent()) return emptyAttribution();
   const stored = readStored();
   const params = new URLSearchParams(window.location.search);
 
@@ -48,7 +57,11 @@ export function captureAttribution(): Attribution {
   }
 
   // Первый заход «побеждает»: перезаписываем только если в URL есть новые метки.
-  if (stored && Object.keys(utm).length === 0 && Object.keys(clickIds).length === 0) {
+  if (
+    stored &&
+    Object.keys(utm).length === 0 &&
+    Object.keys(clickIds).length === 0
+  ) {
     return stored;
   }
 
@@ -70,9 +83,8 @@ export function captureAttribution(): Attribution {
 }
 
 export function getAttribution(): Attribution {
-  if (typeof window === 'undefined') {
-    return { utm: {}, clickIds: {}, landingPage: '', referrer: '', savedAt: '' };
-  }
+  if (typeof window === 'undefined' || !hasAnalyticsConsent())
+    return emptyAttribution();
   return (
     readStored() ?? {
       utm: {},
@@ -82,6 +94,18 @@ export function getAttribution(): Attribution {
       savedAt: new Date().toISOString(),
     }
   );
+}
+
+function emptyAttribution(): Attribution {
+  return { utm: {}, clickIds: {}, landingPage: '', referrer: '', savedAt: '' };
+}
+
+export function clearAttribution(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* Storage can be unavailable. */
+  }
 }
 
 export function deviceType(): 'mobile' | 'tablet' | 'desktop' {

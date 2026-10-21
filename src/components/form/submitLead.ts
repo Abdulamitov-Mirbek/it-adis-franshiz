@@ -6,8 +6,10 @@ import {
 } from '@/lib/attribution';
 import { normalizePhone } from '@/lib/phone';
 import type { LeadValues } from './leadSchema';
+import { PRIVACY_POLICY_VERSION } from '@/lib/privacyConsent';
 
 export interface LeadPayload extends Omit<LeadValues, 'company'> {
+  privacyPolicyVersion: string;
   budget?: string;
   language?: 'ru' | 'kg';
   phoneNormalized: string;
@@ -32,6 +34,7 @@ export function buildPayload(
     city: values.city.trim(),
     format: values.format,
     consent: values.consent,
+    privacyPolicyVersion: PRIVACY_POLICY_VERSION,
     page: typeof window === 'undefined' ? '' : window.location.href,
     referrer: attribution.referrer,
     sentAt: bishkekTimestamp(),

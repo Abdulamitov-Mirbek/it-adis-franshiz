@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Copy, useLanguage } from '@/content/Language';
 import { BUSINESS_CONTACT, CONFIG } from '@/lib/config';
 import { createLeadSchema, type LeadValues } from './leadSchema';
 import { buildPayload, submitLead } from './submitLead';
 import { track } from '@/lib/analytics';
+import { PRIVACY_POLICY_VERSION } from '@/lib/privacyConsent';
 
 interface Props {
   format: LeadValues['format'];
@@ -38,7 +39,6 @@ export function PrototypeLeadForm({ format, city, onFormatChange }: Props) {
     handleSubmit,
     setValue,
     trigger,
-    watch,
     formState: { errors, isSubmitting, isSubmitted },
   } = useForm<LeadValues>({
     resolver: zodResolver(createLeadSchema(messages)),
@@ -47,11 +47,11 @@ export function PrototypeLeadForm({ format, city, onFormatChange }: Props) {
       phone: '',
       city,
       format,
-      consent: false,
+      // Submission itself is the affirmative action described beside the button.
+      consent: true,
       company: '',
     },
   });
-  const hasConsent = watch('consent');
   useEffect(() => {
     setValue('format', format);
   }, [format, setValue]);
@@ -103,6 +103,10 @@ export function PrototypeLeadForm({ format, city, onFormatChange }: Props) {
       `${copy.cityFormLabel}: ${values.city.trim()}`,
       `${copy.formFormatLabel}: ${formatLabel(values.format)}`,
       `${copy.budgetFormLabel}: ${budgetLabel}`,
+      '',
+      isKg
+        ? `Өтүнмөдөгү маалыматтарды франшиза боюнча байланышуу үчүн иштетүүгө макулмун. Купуялуулук саясаты: ${PRIVACY_POLICY_VERSION}.`
+        : `Согласен на обработку данных заявки для связи по франшизе. Политика конфиденциальности: ${PRIVACY_POLICY_VERSION}.`,
     ].join('\n');
     window.open(
       `https://wa.me/${BUSINESS_CONTACT.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`,
@@ -110,7 +114,7 @@ export function PrototypeLeadForm({ format, city, onFormatChange }: Props) {
       'noopener,noreferrer',
     );
     setStatus('draft');
-    track('form_submit', { format: values.format });
+    track('whatsapp_draft_open', { format: values.format });
   };
   return (
     <form
@@ -215,27 +219,22 @@ export function PrototypeLeadForm({ format, city, onFormatChange }: Props) {
           {...register('company')}
         />
       </div>
-      <label className="consent" htmlFor="f-consent">
-        <input
-          id="f-consent"
-          type="checkbox"
-          {...register('consent')}
-          aria-invalid={errors.consent ? 'true' : undefined}
-          aria-describedby={errors.consent ? 'e-consent' : undefined}
-        />
-        <span>
-          <Copy id="consent" />
-          {errors.consent && (
-            <span className="field__error" id="e-consent" role="alert">
-              {errors.consent.message}
-            </span>
-          )}
-        </span>
-      </label>
+      <p className="privacy-notice" id="form-privacy-notice">
+        {isKg
+          ? 'Баскычты басуу менен сиз '
+          : 'Нажимая кнопку, вы соглашаетесь с '}
+        <Link to="/privacy" target="_blank" rel="noopener noreferrer">
+          {isKg ? 'купуялуулук саясаты' : 'политикой конфиденциальности'}
+        </Link>
+        {isKg
+          ? ' менен макулдугуңузду бересиз жана франшиза боюнча байланышуу үчүн өтүнмөдөгү маалыматтарды иштетүүгө макул болосуз.'
+          : ' и даёте согласие на обработку данных заявки для связи по франшизе.'}
+      </p>
       <button
         className="btn btn--block"
         type="submit"
-        disabled={!hasConsent || isSubmitting}
+        disabled={isSubmitting}
+        aria-describedby="form-privacy-notice"
       >
         {isSubmitting ? (
           isKg ? (

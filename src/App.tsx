@@ -3,12 +3,15 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
 import { ProgressRail } from '@/components/layout/ProgressRail';
 import { Footer } from '@/components/layout/Footer';
+import { PrivacyConsent } from '@/components/ui/PrivacyConsent';
 import { Home } from '@/pages/Home';
 import { Thanks } from '@/pages/Thanks';
 import { Privacy } from '@/pages/Privacy';
 import { NotFound } from '@/pages/NotFound';
-import { captureAttribution } from '@/lib/attribution';
-import { initScrollDepth } from '@/lib/analytics';
+import { captureAttribution, clearAttribution } from '@/lib/attribution';
+import { initScrollDepth, track } from '@/lib/analytics';
+import { startTagManager, stopTagManager } from '@/lib/tagManager';
+import { useAnalyticsConsent } from '@/hooks/useAnalyticsConsent';
 import { useActiveSection } from '@/hooks/useActiveSection';
 import { useLanguage } from '@/content/Language';
 
@@ -26,11 +29,22 @@ export default function App() {
   const { isKg } = useLanguage();
   const { pathname } = useLocation();
   const active = useActiveSection(SCREEN_IDS);
+  const analyticsConsent = useAnalyticsConsent();
 
   useEffect(() => {
+    if (analyticsConsent !== 'accepted') {
+      stopTagManager();
+      clearAttribution();
+      return;
+    }
     captureAttribution();
+    startTagManager();
     return initScrollDepth();
-  }, []);
+  }, [analyticsConsent]);
+
+  useEffect(() => {
+    track('page_view');
+  }, [pathname, analyticsConsent]);
 
   return (
     <>
@@ -47,6 +61,7 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
+      <PrivacyConsent />
     </>
   );
 }

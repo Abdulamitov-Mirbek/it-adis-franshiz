@@ -12,9 +12,7 @@ export const CONFIG = {
   leadEndpoint: (env.VITE_LEAD_ENDPOINT ?? '').trim(),
   siteUrl: (env.VITE_SITE_URL ?? 'https://franchise.itadis.kg').trim(),
   analytics: {
-    ga4: (env.VITE_GA4_ID ?? '').trim(),
-    metaPixel: (env.VITE_META_PIXEL_ID ?? '').trim(),
-    yandex: (env.VITE_YANDEX_METRIKA_ID ?? '').trim(),
+    gtm: (env.VITE_GTM_ID ?? 'GTM-NRL6QKJ8').trim().toUpperCase(),
   },
 } as const;
 

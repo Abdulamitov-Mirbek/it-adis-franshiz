@@ -6,7 +6,8 @@
  * Персональные данные (имя, телефон) в аналитику НЕ передаются.
  */
 
-import { CONFIG } from './config';
+import { hasAnalyticsConsent } from './privacyConsent';
+import { analyticsPageUrl, isTagManagerConfigured } from './tagManager';
 
 export type AnalyticsEvent =
   | 'page_view'
@@ -17,6 +18,7 @@ export type AnalyticsEvent =
   | 'form_start'
   | 'form_error'
   | 'form_submit'
+  | 'whatsapp_draft_open'
   | 'thanks_view'
   | 'messenger_click'
   | 'faq_open'
@@ -26,7 +28,15 @@ export type AnalyticsEvent =
 
 type Params = Record<string, string | number | boolean | undefined>;
 
-const PERSONAL_KEYS = ['name', 'phone', 'email', 'имя', 'телефон'];
+const PERSONAL_KEYS = [
+  'name',
+  'phone',
+  'email',
+  'city',
+  'имя',
+  'телефон',
+  'город',
+];
 
 function stripPersonal(params: Params): Params {
   const safe: Params = {};
@@ -38,26 +48,26 @@ function stripPersonal(params: Params): Params {
 }
 
 export function track(event: AnalyticsEvent, params: Params = {}): void {
-  if (typeof window === 'undefined') return;
+  if (
+    typeof window === 'undefined' ||
+    !hasAnalyticsConsent() ||
+    !isTagManagerConfigured()
+  )
+    return;
   const payload = stripPersonal(params);
 
-  // Google Tag Manager / GA4
+  // Container tags should consume these events; no direct analytics SDKs run here.
   window.dataLayer = window.dataLayer ?? [];
-  window.dataLayer.push({ event, ...payload });
-
-  if (CONFIG.analytics.ga4 && typeof window.gtag === 'function') {
-    // Лид в GA4 — стандартное событие generate_lead.
-    window.gtag('event', event === 'form_submit' ? 'generate_lead' : event, payload);
-  }
-
-  if (CONFIG.analytics.metaPixel && typeof window.fbq === 'function') {
-    if (event === 'form_submit') window.fbq('track', 'Lead', payload);
-    else window.fbq('trackCustom', event, payload);
-  }
-
-  if (CONFIG.analytics.yandex && typeof window.ym === 'function') {
-    window.ym(Number(CONFIG.analytics.yandex), 'reachGoal', event, payload);
-  }
+  window.dataLayer.push({
+    ...payload,
+    event,
+    ...(event === 'page_view'
+      ? {
+          page_location: analyticsPageUrl(),
+          page_referrer: analyticsPageUrl(document.referrer),
+        }
+      : {}),
+  });
 
   if (import.meta.env.DEV) {
     // eslint-disable-next-line no-console

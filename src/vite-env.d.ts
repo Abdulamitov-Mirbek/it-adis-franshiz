@@ -7,9 +7,7 @@ interface ImportMetaEnv {
   readonly VITE_CONTACT_TELEGRAM?: string;
   readonly VITE_CONTACT_INSTAGRAM?: string;
   readonly VITE_CONTACT_PHONE?: string;
-  readonly VITE_GA4_ID?: string;
-  readonly VITE_META_PIXEL_ID?: string;
-  readonly VITE_YANDEX_METRIKA_ID?: string;
+  readonly VITE_GTM_ID?: string;
 }
 
 interface ImportMeta {
@@ -19,6 +17,4 @@ interface ImportMeta {
 interface Window {
   dataLayer?: unknown[];
   gtag?: (...args: unknown[]) => void;
-  fbq?: (...args: unknown[]) => void;
-  ym?: (...args: unknown[]) => void;
 }

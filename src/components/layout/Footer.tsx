@@ -3,6 +3,7 @@ import { Logo } from '@/components/ui/Logo';
 import { Copy, useLanguage } from '@/content/Language';
 import { BUSINESS_CONTACT, CONTACT_LIST } from '@/lib/config';
 import { track } from '@/lib/analytics';
+import { openPrivacySettings } from '@/lib/privacyConsent';
 
 export function Footer() {
   const { isKg } = useLanguage();
@@ -41,8 +42,15 @@ export function Footer() {
               </a>
             ))}
             <Link to="/privacy">
-              {isKg ? 'Купуялык саясаты' : 'Политика конфиденциальности'}
+              {isKg ? 'Купуялуулук саясаты' : 'Политика конфиденциальности'}
             </Link>
+            <button
+              className="footer__privacy-settings"
+              type="button"
+              onClick={openPrivacySettings}
+            >
+              {isKg ? 'Cookie жөндөөлөрү' : 'Настройки cookie'}
+            </button>
             {CONTACT_LIST.map(([channel, href]) => (
               <a
                 key={channel}
