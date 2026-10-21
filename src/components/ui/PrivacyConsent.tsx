@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/content/Language';
 import { useAnalyticsConsent } from '@/hooks/useAnalyticsConsent';
 import {
@@ -10,13 +10,17 @@ import {
 export function PrivacyConsent() {
   const { isKg } = useLanguage();
   const choice = useAnalyticsConsent();
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(choice === null);
+  const [manuallyOpened, setManuallyOpened] = useState(false);
+  const visible = open && (pathname !== '/privacy' || manuallyOpened);
   const heading = useRef<HTMLHeadingElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const show = () => {
       previousFocus.current = document.activeElement as HTMLElement;
+      setManuallyOpened(true);
       setOpen(true);
       requestAnimationFrame(() => heading.current?.focus());
     };
@@ -25,9 +29,9 @@ export function PrivacyConsent() {
   }, []);
 
   useEffect(() => {
-    document.body.classList.toggle('has-consent-banner', open);
+    document.body.classList.toggle('has-consent-banner', visible);
     return () => document.body.classList.remove('has-consent-banner');
-  }, [open]);
+  }, [visible]);
 
   useEffect(() => {
     setOpen(choice === null);
@@ -35,6 +39,7 @@ export function PrivacyConsent() {
 
   const close = () => {
     setOpen(false);
+    setManuallyOpened(false);
     previousFocus.current?.focus({ preventScroll: true });
   };
   const choose = (accepted: boolean) => {
@@ -42,20 +47,27 @@ export function PrivacyConsent() {
     close();
   };
 
-  if (!open) return null;
+  if (!visible) return null;
   return (
-    <aside className="privacy-consent" aria-labelledby="privacy-consent-title">
+    <aside
+      className={`privacy-consent${choice !== null ? ' privacy-consent--settings' : ''}`}
+      aria-labelledby="privacy-consent-title"
+    >
       <div className="privacy-consent__copy">
-        <span className="privacy-consent__eyebrow">IT ADIS · PRIVACY</span>
-        <h2 id="privacy-consent-title" ref={heading} tabIndex={-1}>
-          {isKg ? 'Купуялуулук жөндөөлөрү' : 'Настройки конфиденциальности'}
+        <h2
+          className="visually-hidden"
+          id="privacy-consent-title"
+          ref={heading}
+          tabIndex={-1}
+        >
+          {isKg ? 'Cookie жана купуялуулук' : 'Cookie и конфиденциальность'}
         </h2>
         <p>
           {isKg
-            ? 'Сайтты жакшыртуу үчүн кирүүлөрдүн статистикасын чогултууга уруксат бересизби? Аналитикалык cookie файлдары сиздин макулдугуңуз менен гана колдонулат. Өтүнмөнү каалаган тандоодо жөнөтө аласыз. '
-            : 'Разрешите собирать статистику посещений для улучшения сайта? Аналитические cookie используются только с вашего согласия. Отправить заявку можно при любом выборе. '}
-          <Link to="/privacy">
-            {isKg ? 'Купуялуулук саясаты' : 'Политика конфиденциальности'}
+            ? 'Сайттын иштеши үчүн cookie колдонобуз. Аналитика сиздин макулдугуңуз менен гана иштейт. '
+            : 'Для работы сайта используем cookie. Аналитика включается с вашего согласия. '}
+          <Link to="/privacy" target="_blank" rel="noopener noreferrer">
+            {isKg ? 'Кененирээк' : 'Подробнее'}
           </Link>
         </p>
         {choice !== null && (
@@ -73,14 +85,14 @@ export function PrivacyConsent() {
       </div>
       <div className="privacy-consent__actions">
         <button className="btn" type="button" onClick={() => choose(true)}>
-          {isKg ? 'Аналитикага уруксат берүү' : 'Разрешить аналитику'}
+          {isKg ? 'Макулмун' : 'Согласен'}
         </button>
         <button
           className="btn btn--ghost"
           type="button"
           onClick={() => choose(false)}
         >
-          {isKg ? 'Аналитикасыз улантуу' : 'Продолжить без аналитики'}
+          {isKg ? 'Аналитикасыз' : 'Без аналитики'}
         </button>
       </div>
       {choice !== null && (
