@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
 import { ProgressRail } from '@/components/layout/ProgressRail';
 import { Footer } from '@/components/layout/Footer';
 import { PrivacyConsent } from '@/components/ui/PrivacyConsent';
+import { PrivacyDialog } from '@/components/ui/PrivacyDialog';
 import { Home } from '@/pages/Home';
 import { Thanks } from '@/pages/Thanks';
-import { Privacy } from '@/pages/Privacy';
 import { NotFound } from '@/pages/NotFound';
 import { captureAttribution, clearAttribution } from '@/lib/attribution';
 import { initScrollDepth, track } from '@/lib/analytics';
@@ -57,11 +57,12 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/thanks" element={<Thanks />} />
-        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/privacy" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <PrivacyConsent />
+      <PrivacyDialog />
     </>
   );
 }

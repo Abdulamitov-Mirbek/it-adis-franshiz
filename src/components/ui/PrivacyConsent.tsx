@@ -1,26 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/content/Language';
 import { useAnalyticsConsent } from '@/hooks/useAnalyticsConsent';
 import {
   PRIVACY_SETTINGS_EVENT,
+  openPrivacyPolicy,
   setAnalyticsConsent,
 } from '@/lib/privacyConsent';
 
 export function PrivacyConsent() {
   const { isKg } = useLanguage();
   const choice = useAnalyticsConsent();
-  const { pathname } = useLocation();
   const [open, setOpen] = useState(choice === null);
-  const [manuallyOpened, setManuallyOpened] = useState(false);
-  const visible = open && (pathname !== '/privacy' || manuallyOpened);
   const heading = useRef<HTMLHeadingElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const show = () => {
       previousFocus.current = document.activeElement as HTMLElement;
-      setManuallyOpened(true);
       setOpen(true);
       requestAnimationFrame(() => heading.current?.focus());
     };
@@ -29,9 +25,9 @@ export function PrivacyConsent() {
   }, []);
 
   useEffect(() => {
-    document.body.classList.toggle('has-consent-banner', visible);
+    document.body.classList.toggle('has-consent-banner', open);
     return () => document.body.classList.remove('has-consent-banner');
-  }, [visible]);
+  }, [open]);
 
   useEffect(() => {
     setOpen(choice === null);
@@ -39,7 +35,6 @@ export function PrivacyConsent() {
 
   const close = () => {
     setOpen(false);
-    setManuallyOpened(false);
     previousFocus.current?.focus({ preventScroll: true });
   };
   const choose = (accepted: boolean) => {
@@ -47,7 +42,7 @@ export function PrivacyConsent() {
     close();
   };
 
-  if (!visible) return null;
+  if (!open) return null;
   return (
     <aside
       className={`privacy-consent${choice !== null ? ' privacy-consent--settings' : ''}`}
@@ -66,9 +61,13 @@ export function PrivacyConsent() {
           {isKg
             ? 'Сайттын иштеши үчүн cookie колдонобуз. Аналитика сиздин макулдугуңуз менен гана иштейт. '
             : 'Для работы сайта используем cookie. Аналитика включается с вашего согласия. '}
-          <Link to="/privacy" target="_blank" rel="noopener noreferrer">
+          <button
+            className="privacy-policy-link"
+            type="button"
+            onClick={openPrivacyPolicy}
+          >
             {isKg ? 'Кененирээк' : 'Подробнее'}
-          </Link>
+          </button>
         </p>
         {choice !== null && (
           <p className="privacy-consent__current">

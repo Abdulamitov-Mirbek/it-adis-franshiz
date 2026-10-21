@@ -1,9 +1,8 @@
-import { Link } from 'react-router-dom';
 import { Logo } from '@/components/ui/Logo';
 import { Copy, useLanguage } from '@/content/Language';
 import { BUSINESS_CONTACT, CONTACT_LIST } from '@/lib/config';
 import { track } from '@/lib/analytics';
-import { openPrivacySettings } from '@/lib/privacyConsent';
+import { openPrivacyPolicy, openPrivacySettings } from '@/lib/privacyConsent';
 
 export function Footer() {
   const { isKg } = useLanguage();
@@ -41,9 +40,13 @@ export function Footer() {
                 <Copy id={item.label} />
               </a>
             ))}
-            <Link to="/privacy">
+            <button
+              className="footer__privacy-settings"
+              type="button"
+              onClick={openPrivacyPolicy}
+            >
               {isKg ? 'Купуялуулук саясаты' : 'Политика конфиденциальности'}
-            </Link>
+            </button>
             <button
               className="footer__privacy-settings"
               type="button"

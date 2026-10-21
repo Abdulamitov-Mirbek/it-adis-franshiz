@@ -41,7 +41,7 @@ src/
 │  └─ ui/                  Reveal, Counter, Marquee, Icon, SectionHead, Logo
 ├─ hooks/                  useInView, useReducedMotion, useSectionTracking, useDocumentMeta
 ├─ lib/                    analytics, attribution (UTM), phone, config
-└─ pages/                  Home, Thanks (/thanks), Privacy (/privacy), NotFound (404)
+└─ pages/                  Home, Thanks (/thanks), Privacy (текст в диалоге), NotFound (404)
 ```
 
 **Основные тексты меняются в `src/content/locales/ru.json` и `kg.json`**. Числа финансовой модели находятся в `PrototypeContent.tsx`, а декоративные 3D-карточки — в `content.ts` / `heroVisual.ts`.
@@ -58,9 +58,10 @@ src/
 
 Google Tag Manager загружается из `src/lib/tagManager.ts` только после выбора
 «Согласен» в компактном уведомлении внизу сайта. До согласия и после отказа запросов к GTM нет.
-Ссылка «Подробнее» открывает `/privacy` в новой вкладке, оставляя главную страницу
-на месте. На самой странице политики уведомление не мешает чтению; настройки
-можно открыть вручную кнопкой «Открыть настройки cookie».
+Кнопка «Подробнее» открывает политику в модальном окне поверх сайта без смены
+адреса и без новой вкладки. Полный текст также доступен кнопками в подвале
+и рядом с формой. Старый адрес `/privacy` перенаправляет на главную (на Vercel
+и в SPA), чтобы телефон не открывал документ вместо сайта при повторном входе.
 Consent Mode разрешает только `analytics_storage`; рекламные согласия остаются
 `denied`. Отозвать согласие можно через «Настройки cookie» в подвале или политике.
 После отзыва страница перезагружается, чтобы остановить ранее загруженные теги.
@@ -78,7 +79,7 @@ Consent Mode разрешает только `analytics_storage`; рекламн
 `form_submit` означает успешную отправку на настроенный endpoint;
 `whatsapp_draft_open` — открытие черновика, а не подтверждённую отправку сообщения.
 В payload заявки и черновике WhatsApp указывается версия политики `2026-10-21`.
-Политика на `/privacy` переведена на RU/KG, оператор — ОсОО «Айти Адис»,
+Политика в диалоге переведена на RU/KG, оператор — ОсОО «Айти Адис»,
 контакт — `itadiskg11@gmail.com`. Согласие на обработку заявки даётся её отправкой;
 оно независимо от выбора аналитики. UTM/click-id сохраняются только после
 разрешения аналитики и удаляются при отказе.
@@ -99,7 +100,7 @@ Consent Mode разрешает только `analytics_storage`; рекламн
   сбор UTM и click-id на 30 дней, служебные данные (страница, referrer, время по Бишкеку, устройство).
 * Аналитика: все события раздела 9 через один слой `track()`; персональные данные не уходят.
 * SEO: title/description, Open Graph, canonical, schema.org Organization, `robots.txt`,
-  `sitemap.xml`, манифест, иконки, страницы `/thanks`, `/privacy`, 404.
+  `sitemap.xml`, манифест, иконки, страницы `/thanks`, 404 и политика в диалоге.
 * Доступность: один H1, видимый фокус, цели от 44 px, поля 50 px и шрифт 16 px на мобильных,
   `prefers-reduced-motion` отключает анимации, контент виден без JS.
 
@@ -141,7 +142,8 @@ WebGL, и без JS.
 ## Vercel
 
 The root `vercel.json` configures the Vite build, `dist` output, and SPA routing
-so direct visits and refreshes on `/thanks` and `/privacy` work.
+so direct visits and refreshes on `/thanks` work. The old `/privacy` URL redirects
+to `/`; the policy is opened explicitly in a dialog from the main site.
 
 1. Push this project to your Git repository, including `package-lock.json` and `vercel.json`.
 2. Import the repository into Vercel. Use the repository root as the Root Directory.
@@ -161,7 +163,8 @@ API keys or bot tokens in them. Keep backend credentials on your lead endpoint's
 
 ## Деплой
 
-Сборка статическая (`dist/`), нужен фолбэк на `index.html` для `/thanks`, `/privacy` и 404.
+Сборка статическая (`dist/`), нужен фолбэк на `index.html` для `/thanks` и 404;
+старый адрес `/privacy` перенаправляется на `/`.
 
 **nginx:**
 

@@ -3,6 +3,7 @@ export type AnalyticsConsent = 'accepted' | 'rejected' | null;
 const STORAGE_KEY = 'itadis-analytics-consent';
 const CHANGE_EVENT = 'itadis:analytics-consent';
 export const PRIVACY_SETTINGS_EVENT = 'itadis:privacy-settings';
+export const PRIVACY_POLICY_EVENT = 'itadis:privacy-policy';
 export const PRIVACY_POLICY_VERSION = '2026-10-21';
 
 function readStoredConsent(): AnalyticsConsent {
@@ -62,4 +63,8 @@ export function subscribeAnalyticsConsent(listener: () => void): () => void {
 
 export function openPrivacySettings(): void {
   window.dispatchEvent(new Event(PRIVACY_SETTINGS_EVENT));
+}
+
+export function openPrivacyPolicy(): void {
+  window.dispatchEvent(new Event(PRIVACY_POLICY_EVENT));
 }

@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Copy, useLanguage } from '@/content/Language';
 import { BUSINESS_CONTACT, CONFIG } from '@/lib/config';
 import { createLeadSchema, type LeadValues } from './leadSchema';
 import { buildPayload, submitLead } from './submitLead';
 import { track } from '@/lib/analytics';
-import { PRIVACY_POLICY_VERSION } from '@/lib/privacyConsent';
+import {
+  openPrivacyPolicy,
+  PRIVACY_POLICY_VERSION,
+} from '@/lib/privacyConsent';
 
 interface Props {
   format: LeadValues['format'];
@@ -223,9 +226,13 @@ export function PrototypeLeadForm({ format, city, onFormatChange }: Props) {
         {isKg
           ? 'Баскычты басуу менен сиз '
           : 'Нажимая кнопку, вы соглашаетесь с '}
-        <Link to="/privacy" target="_blank" rel="noopener noreferrer">
+        <button
+          className="privacy-policy-link"
+          type="button"
+          onClick={openPrivacyPolicy}
+        >
           {isKg ? 'купуялуулук саясаты' : 'политикой конфиденциальности'}
-        </Link>
+        </button>
         {isKg
           ? ' менен макулдугуңузду бересиз жана франшиза боюнча байланышуу үчүн өтүнмөдөгү маалыматтарды иштетүүгө макул болосуз.'
           : ' и даёте согласие на обработку данных заявки для связи по франшизе.'}

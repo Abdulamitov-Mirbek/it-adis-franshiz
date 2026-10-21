@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { APPLY, FORMAT_OPTIONS } from '@/content/content';
 import { CONTACT_LIST } from '@/lib/config';
 import { track } from '@/lib/analytics';
 import { leadSchema, type LeadValues } from './leadSchema';
 import { buildPayload, submitLead } from './submitLead';
+import { openPrivacyPolicy } from '@/lib/privacyConsent';
 
 type FormatValue = LeadValues['format'];
 
@@ -27,7 +28,14 @@ export function LeadForm({ format, onFormatChange }: Props) {
     formState: { errors, isSubmitting },
   } = useForm<LeadValues>({
     resolver: zodResolver(leadSchema),
-    defaultValues: { name: '', phone: '', city: '', format, consent: false, company: '' },
+    defaultValues: {
+      name: '',
+      phone: '',
+      city: '',
+      format,
+      consent: false,
+      company: '',
+    },
     mode: 'onSubmit',
   });
 
@@ -146,7 +154,12 @@ export function LeadForm({ format, onFormatChange }: Props) {
       {/* honeypot — раздел 8.2 ТЗ */}
       <div className="hp" aria-hidden="true">
         <label htmlFor="f-company">Компания</label>
-        <input id="f-company" tabIndex={-1} autoComplete="off" {...register('company')} />
+        <input
+          id="f-company"
+          tabIndex={-1}
+          autoComplete="off"
+          {...register('company')}
+        />
       </div>
 
       <div className="consent">
@@ -158,7 +171,14 @@ export function LeadForm({ format, onFormatChange }: Props) {
           {...register('consent')}
         />
         <label htmlFor="f-consent">
-          {fields.consent.label} — <Link to="/privacy">политика обработки данных</Link>
+          {fields.consent.label} —{' '}
+          <button
+            className="privacy-policy-link"
+            type="button"
+            onClick={openPrivacyPolicy}
+          >
+            политика обработки данных
+          </button>
           {errors.consent ? (
             <span className="field__error" id="e-consent" role="alert">
               {errors.consent.message}
