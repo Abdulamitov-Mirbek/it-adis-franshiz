@@ -242,6 +242,27 @@
 .prototype-result p {
   font-size: 14px;
 }
+.prototype-result__list {
+  margin: 20px 0 0;
+}
+.prototype-result__list > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid color-mix(in srgb, var(--lime) 40%, var(--line));
+  font-size: 14px;
+}
+.prototype-result__list dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+.prototype-range {
+  width: 100%;
+  margin-top: 12px;
+  accent-color: var(--lime);
+}
 .prototype-steps {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));

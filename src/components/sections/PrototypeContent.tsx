@@ -6,6 +6,7 @@ import { PrototypeLeadForm } from '@/components/form/PrototypeLeadForm';
 import { PhotoGallery } from '@/components/sections/PhotoGallery';
 import { track } from '@/lib/analytics';
 import { BUSINESS_CONTACT } from '@/lib/config';
+import { calculatePayback, PAYBACK_PLANS, type Rooms } from '@/lib/payback';
 import type { LeadValues } from '@/components/form/leadSchema';
 
 type Format = LeadValues['format'];
@@ -69,12 +70,14 @@ function Checklist({
 }
 
 export function PrototypeContent() {
-  const { isKg } = useLanguage();
+  const { copy, isKg } = useLanguage();
   const [format, setFormat] = useState<Format>('b2g');
-  const [calcFormat, setCalcFormat] = useState<'b2g' | 'center'>('b2g');
+  const [rooms, setRooms] = useState<Rooms>(1);
   const [city, setCity] = useState('');
   const [leadCity, setLeadCity] = useState('');
-  const [extra, setExtra] = useState('');
+  const [revenue, setRevenue] = useState(String(PAYBACK_PLANS[1].revenue.min));
+  // Паушальный взнос 1 кабинета совпадает с B2G, 2 кабинетов — с «Центром».
+  const calcFormat = rooms === 1 ? 'b2g' : 'center';
   const [leadVisible, setLeadVisible] = useState(false);
   useEffect(() => {
     const form = document.getElementById('lead');
@@ -85,14 +88,22 @@ export function PrototypeContent() {
     observer.observe(form);
     return () => observer.disconnect();
   }, []);
-  const fee = calcFormat === 'b2g' ? 200000 : 500000;
-  const investment = calcFormat === 'b2g' ? 130000 : 150000;
-  const extraNumber = Number(extra);
-  const additional = Number.isFinite(extraNumber)
-    ? Math.max(0, extraNumber)
-    : 0;
+  const revenueNumber = Number(revenue);
+  const payback = calculatePayback(
+    rooms,
+    Number.isFinite(revenueNumber) ? Math.max(0, revenueNumber) : 0,
+  );
+  const changeRooms = (next: Rooms) => {
+    setRooms(next);
+    setRevenue(String(PAYBACK_PLANS[next].revenue.min));
+  };
   const money = (value: number) =>
-    `${new Intl.NumberFormat('ru-RU').format(value)} сом`;
+    `${new Intl.NumberFormat('ru-RU').format(Math.round(value))} сом`;
+  const months = (value: number) =>
+    `${new Intl.NumberFormat('ru-RU', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value)} ${isKg ? 'ай' : 'мес.'}`;
   const choose = (next: Format) => {
     setFormat(next);
     track('format_select', { format: next, source: 'formats' });
@@ -291,25 +302,47 @@ export function PrototypeContent() {
                 <Copy id="calcText" />
               </p>
               <div className="field">
-                <label htmlFor="calc-format">
-                  <Copy id="formatLabel" />
+                <label htmlFor="calc-rooms">
+                  <Copy id="roomsLabel" />
                 </label>
                 <select
-                  id="calc-format"
-                  value={calcFormat}
-                  onChange={(e) =>
-                    setCalcFormat(e.target.value as 'b2g' | 'center')
-                  }
+                  id="calc-rooms"
+                  value={rooms}
+                  onChange={(e) => changeRooms(Number(e.target.value) as Rooms)}
                 >
-                  <option value="b2g">
-                    {isKg ? 'B2G — мектептеги класс' : 'B2G — класс в школе'}
-                  </option>
-                  <option value="center">
-                    {isKg
-                      ? 'Борбор — өзүнчө академия'
-                      : 'Центр — отдельная академия'}
+                  <option value={1}>1 кабинет · 25 м²</option>
+                  <option value={2}>
+                    {isKg ? '2 кабинет · 75 м²' : '2 кабинета · 75 м²'}
                   </option>
                 </select>
+              </div>
+              <div className="field">
+                <label htmlFor="calc-revenue">
+                  <Copy id="revenueLabel" />
+                </label>
+                <input
+                  id="calc-revenue"
+                  type="number"
+                  min="0"
+                  max="1000000000"
+                  step="1000"
+                  inputMode="numeric"
+                  value={revenue}
+                  onChange={(e) => setRevenue(e.target.value)}
+                />
+                <input
+                  className="prototype-range"
+                  type="range"
+                  aria-label={copy.revenueLabel}
+                  min={PAYBACK_PLANS[rooms].revenue.min}
+                  max={PAYBACK_PLANS[rooms].revenue.max}
+                  step="10000"
+                  value={Math.min(
+                    PAYBACK_PLANS[rooms].revenue.max,
+                    Math.max(PAYBACK_PLANS[rooms].revenue.min, revenueNumber || 0),
+                  )}
+                  onChange={(e) => setRevenue(e.target.value)}
+                />
               </div>
               <div className="field">
                 <label htmlFor="calc-city">
@@ -325,26 +358,11 @@ export function PrototypeContent() {
                   autoComplete="address-level2"
                 />
               </div>
-              <div className="field">
-                <label htmlFor="calc-extra">
-                  <Copy id="budgetLabel" />
-                </label>
-                <input
-                  id="calc-extra"
-                  type="number"
-                  min="0"
-                  max="1000000000"
-                  inputMode="numeric"
-                  value={extra}
-                  onChange={(e) => setExtra(e.target.value)}
-                  placeholder="0"
-                />
-              </div>
               <button
                 className="btn btn--ghost btn--block"
                 type="button"
                 onClick={() =>
-                  track('budget_calculate', { format: calcFormat })
+                  track('budget_calculate', { format: calcFormat, rooms })
                 }
               >
                 <Copy id="calcBtn" />
@@ -363,12 +381,32 @@ export function PrototypeContent() {
                   <Copy id="totalEstimate" />
                 </p>
                 <strong id="calc-total">
-                  {money(fee + investment + additional)}
+                  {payback.paybackMonths === null
+                    ? '—'
+                    : months(payback.paybackMonths)}
                 </strong>
-                <p id="calc-breakdown">
-                  {money(fee)} + {money(investment)}
-                  {additional > 0 && ` + ${money(additional)}`}
-                </p>
+                {payback.paybackMonths === null && (
+                  <p>
+                    <Copy id="noPayback" />
+                  </p>
+                )}
+                <dl className="prototype-result__list">
+                  {(
+                    [
+                      ['netProfit', money(payback.netProfit)],
+                      ['investmentLabel', money(payback.investment)],
+                      ['fee', money(payback.fee)],
+                      ['area', `${payback.area} м²`],
+                    ] as const
+                  ).map(([label, value]) => (
+                    <div key={label}>
+                      <dt>
+                        <Copy id={label} />
+                      </dt>
+                      <dd>{value}</dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
               <p className="prototype-note">
                 <Copy id="calcDisclaimer" />
