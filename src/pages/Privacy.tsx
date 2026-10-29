@@ -47,8 +47,8 @@ export function Privacy({ onSettings }: { onSettings: () => void }) {
     <article className="legal__card">
       <p className="legal__owner">
         {isKg
-          ? 'franchise.itadis.kg сайты «Айти Адис» ЖЧКга таандык. Байланыш: '
-          : 'Сайт franchise.itadis.kg принадлежит ОсОО «Айти Адис». Контактный e-mail: '}
+          ? 'www.itadis-franshiza.kg сайты «Айти Адис» ЖЧКга таандык. Байланыш: '
+          : 'Сайт www.itadis-franshiza.kg принадлежит ОсОО «Айти Адис». Контактный e-mail: '}
         <a href={`mailto:${BUSINESS_CONTACT.email}`}>
           {BUSINESS_CONTACT.email}
         </a>

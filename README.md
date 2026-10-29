@@ -171,7 +171,7 @@ API keys or bot tokens in them. Keep backend credentials on your lead endpoint's
 ```nginx
 server {
     listen 443 ssl http2;
-    server_name franchise.itadis.kg;
+    server_name www.itadis-franshiza.kg;
     root /var/www/itadis-franchise/dist;
 
     add_header X-Content-Type-Options nosniff always;

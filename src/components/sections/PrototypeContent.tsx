@@ -270,9 +270,12 @@ export function PrototypeContent() {
                       ['fee', money(key === 'b2g' ? 200000 : 500000)],
                       [
                         'startInvestment',
-                        `~${money(key === 'b2g' ? 130000 : 150000)}`,
+                        money(PAYBACK_PLANS[key === 'b2g' ? 1 : 2].investment),
                       ],
-                      ['area', key === 'b2g' ? '30–40 м²' : '60–100 м²'],
+                      [
+                        'area',
+                        `${PAYBACK_PLANS[key === 'b2g' ? 1 : 2].area} м²`,
+                      ],
                     ] as const
                   ).map(([label, value]) => (
                     <div className="prototype-cost" key={label}>

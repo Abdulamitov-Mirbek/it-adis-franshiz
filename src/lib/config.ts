@@ -10,7 +10,7 @@ export const BUSINESS_CONTACT = {
 
 export const CONFIG = {
   leadEndpoint: (env.VITE_LEAD_ENDPOINT ?? '').trim(),
-  siteUrl: (env.VITE_SITE_URL ?? 'https://franchise.itadis.kg').trim(),
+  siteUrl: (env.VITE_SITE_URL ?? 'https://www.itadis-franshiza.kg').trim(),
   analytics: {
     gtm: (env.VITE_GTM_ID ?? 'GTM-NRL6QKJ8').trim().toUpperCase(),
   },
